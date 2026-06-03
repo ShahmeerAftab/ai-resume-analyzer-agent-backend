@@ -1,9 +1,11 @@
 import multer from "multer";
 
-const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
+// memoryStorage keeps the uploaded file in RAM as req.file.buffer — no disk needed
 const storage = multer.memoryStorage();
 
+// reject any file that is not a PDF before it reaches the controller
 const fileFilter = (_req, file, cb) => {
   if (file.mimetype === "application/pdf") {
     cb(null, true);
@@ -15,10 +17,10 @@ const fileFilter = (_req, file, cb) => {
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: MAX_SIZE_BYTES },
+  limits: { fileSize: MAX_FILE_SIZE },
 });
 
-// Wraps multer so multer errors surface as proper Express errors
+// wraps multer so its errors reach Express's central error handler
 const uploadResume = (req, res, next) => {
   upload.single("resume")(req, res, (err) => {
     if (!err) return next();
@@ -32,7 +34,6 @@ const uploadResume = (req, res, next) => {
       return next(new Error(message));
     }
 
-    // fileFilter rejection or unexpected error
     res.status(400);
     next(err);
   });

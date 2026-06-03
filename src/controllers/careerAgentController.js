@@ -8,7 +8,7 @@ import {
   removeWorkflow,
 } from "../services/agentWorkflowService.js";
 
-// ── POST /api/agent/analyze ───────────────────────────────────────────────────
+// POST /api/agent/analyze 
 export const careerAgentController = async (req, res, next) => {
   const { resumeId, companyName, jobRole, location } = req.body;
 
