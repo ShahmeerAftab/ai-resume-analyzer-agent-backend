@@ -6,7 +6,7 @@ const connectDB = async () => {
   if (mongoose.connection.readyState === 1) return;
 
   const conn = await mongoose.connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000, // stop waiting after 5 seconds if Atlas is unreachable
+    serverSelectionTimeoutMS: 10000, // cold starts on Vercel need more time to reach Atlas
   });
 
   console.log(`MongoDB connected: ${conn.connection.host}`);
