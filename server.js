@@ -17,7 +17,12 @@ const PORT = process.env.PORT || 5000;
 // starting the HTTP server — this ensures the DB is ready before any
 // requests can arrive.
 const startServer = async () => {
-  await connectDB(); // Step 1: connect to MongoDB Atlas
+  try {
+    await connectDB(); // Step 1: connect to MongoDB Atlas
+  } catch (error) {
+    console.error(`MongoDB connection error: ${error.message}`);
+    process.exit(1);
+  }
 
   // Step 2: only start listening for requests after the DB is connected
   app.listen(PORT, () => {
